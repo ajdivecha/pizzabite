@@ -1,0 +1,135 @@
+<div class = "container">
+  <div class = "jumbotron title">
+    <h1>Your favorite pizza has...</h1>
+  </div>
+<div class = "row">
+  <div class = "col-sm-3"></div>
+  <div class = "col-sm-6">
+    <img  class= "responsiveimage" src = "assets/img/pizza.gif">
+  </div>
+  <div class = "col-sm-3"></div>
+</div>
+<div class = 'row'>
+<div class = 'col-sm-1'></div>
+<div class = 'col-sm-5'>
+  <h3>Pizzas to try</h3>
+<div class = "sliceNotEaten">
+  {{#each pizza}}
+    {{#unless nommed}}
+
+      <p id = "toppingsHolder">
+        {{this.toppings}}
+
+        <button data-pizzaid="{{this.id}}" class="nom btn" name="false"><span class="glyphicon glyphicon-cutlery" aria-hidden="true"></span></button>
+
+        <button data-pizzaid="{{this.id}}" class="delete btn"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+      </p>
+    {{/unless}}
+  {{/each}}
+</div>
+</div>
+<div class = "col-sm-5">
+  <h3>Pizzas Ate</h3>
+<div id = "pizzasAte">
+  {{#each pizza}}
+    {{#if nommed}}
+      <p id = "toppingsHolder">
+        {{this.toppings}}
+
+        <button data-pizzaid="{{this.id}}" class="retry btn" name="true"><span class="glyphicon glyphicon-hand-left" aria-hidden="true"></span></button>
+        <button data-pizzaid="{{this.id}}" class="delete btn"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+      </p>
+    {{/if}}
+  {{/each}}
+</div>
+</div>
+<div class = "col-sm-1">
+</div>
+</div>
+
+
+<h2>Add </h2>
+<form id="addTopping" class="button-size">
+	<textarea type="text" name="toppings"></textarea>
+	<button type="submit btn"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+</form>
+</div>
+
+
+<script type="text/javascript">
+  $(".nom").on("click", function(event) {
+    var id = $(this).data("pizzaid");
+    var boo =
+    {nommed: 1};
+
+    // Mark as seen
+    $.ajax("/pizza/" + id, {
+      type: "PUT",
+      data: boo
+    }).then(
+      function() {
+        console.log("finally ate a pizza with ", id);
+
+        location.reload();
+      }
+    );
+  });
+
+  $("#addTopping").on("submit", function(event) {
+
+    event.preventDefault();
+
+    var newTopping = {
+      toppings: $("#addTopping [name=toppings]").val().trim()
+    };
+
+
+    $.ajax("/pizza", {
+      type: "POST",
+      data: newTopping
+    }).then(
+      function() {
+        console.log("added new topping");
+
+        location.reload();
+      }
+    );
+}
+);
+
+  $(".retry").on("click", function(event){
+    event.preventDefault();
+    var id = $(this).data("pizzaid");
+    var boo =
+    {nommed: 0};
+    // Mark as unseen
+    $.ajax("/pizza/" + id, {
+      type: "PUT",
+      data: boo
+    }).then(
+      function() {
+        console.log("lets retry", id);
+        location.reload();
+      }
+    );
+
+  });
+
+  $(".delete").on("click",
+function(event){
+  event.preventDefault();
+  var id = $(this).data("pizzaid");
+  // Send the DELETE request.
+  $.ajax("/pizza/" + id, {
+    type: "DELETE"
+  }).then(
+    function() {
+      console.log("deleted topping", id);
+      // Reload the page to get the updated list
+      location.reload();
+    }
+  );
+});
+
+
+</script>
