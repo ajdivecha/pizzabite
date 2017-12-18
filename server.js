@@ -27,5 +27,5 @@ app.use("/", routes);
 
 
 app.listen(PORT, function() {
-  console.log("listening on port", port);
+  console.log("listening on port", PORT);
 });
