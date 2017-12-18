@@ -7,7 +7,8 @@ var connection = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "root",
-  database: "pizzaDB"
+  database: "pizzaDB",
+  port: "3307"
 });
 }
 
