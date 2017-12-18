@@ -26,6 +26,6 @@ var routes = require("./controllers/pizzacontroller.js");
 app.use("/", routes);
 
 
-app.listen(port, function() {
+app.listen(PORT, function() {
   console.log("listening on port", port);
 });
